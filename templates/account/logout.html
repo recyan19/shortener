@@ -1,0 +1,7 @@
+{% extends 'shorter/base.html' %}
+{% block content %}
+    <form method="post" action="/accounts/logout/">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Sign Out</button>
+    </form>
+{% endblock %}

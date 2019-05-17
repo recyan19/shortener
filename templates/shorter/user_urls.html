@@ -1,0 +1,10 @@
+{% extends 'shorter/base.html' %}
+{% block title %}
+    My urls
+{% endblock %}
+{% block content %}
+    {% for url in urls %}
+        <a href="/{{ url.url_id }}" target="_blank">{{ site_url }}{{ url.url_id }} </a><small>{{ url.url }}</small>
+        <p></p>
+    {% endfor %}
+{% endblock %}

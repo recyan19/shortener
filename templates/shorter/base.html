@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Url shortening service {% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<script type="text/javascript">
+    $(function() {
+        $('#submitButton').click(function() {
+            $.ajax({
+                type: "POST",
+                url: "/shorten/",
+                data: {
+                    'url' : $('#url').val(),
+                    'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val()
+                },
+            success: returnSuccess,
+            dataType: 'json'
+            });
+        });
+    });
+
+    function returnSuccess(data, textStatus, jqXHR) {
+        if(data.url) {
+            $('#url-result').text(data.url);
+            $('#url').val("");
+        } else {
+            $('#url-result').text("Do not submit blank.");
+        }
+
+    }
+</script>
+<body>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'shorter:home' %}">URL shortener</a>
+        </li>
+        {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'shorter:user-urls' %}">My urls</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'shorter:stats' %}">Statistics</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link disabled" href="{% url 'account_login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="{% url 'account_signup' %}">Sign Up</a>
+            </li>
+        {% endif %}
+    </ul>
+    <div id="wrap">
+        <header>
+            <h1><a href="{% url 'shorter:home' %}">URL shortener</a></h1>
+        </header>
+        <div id="content">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+     </div>
+</body>
+</html>
